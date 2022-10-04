@@ -1,0 +1,58 @@
+﻿using Aquality.Selenium.Browsers;
+using Aquality.Selenium.Core.Configurations;
+using ExamTaskDockerUiDb.Constants;
+using Newtonsoft.Json.Linq;
+
+namespace ExamTaskDockerUiDb.Utilities
+{
+    public static class FileReader
+    {
+        public static Dictionary<string, string> GetMethods(string path)
+        {
+            LoggerUtils.LogStep(nameof(GetMethods) + " \"Get api methods\"");
+            var json = File.ReadAllText(path);
+            var jsonObj = JObject.Parse(json);
+            Dictionary<string, string> methods = new Dictionary<string, string>();
+
+            foreach (var element in jsonObj)
+            {
+                methods.Add(element.Key, element.Value.ToString());
+            }
+            return methods;
+        }
+
+        public static string ConvertToBase64(string path)
+        {
+            LoggerUtils.LogStep(nameof(ConvertToBase64) + $" \"Start convertation - [{path}]\"");
+            byte[] imageArray = File.ReadAllBytes(path);
+            return Convert.ToBase64String(imageArray);
+        }
+
+        public static void ClearLogFile()
+        {
+            FileInfo file = new FileInfo(FileConstants.PathToLogFile);
+
+            if (file.Exists)
+            {
+                file.Delete();
+                LoggerUtils.LogStep(nameof(ClearLogFile) + $" \"Log file deleted - [{file}]\"");
+            }
+        }
+
+        public static ByteArrayContent ReadImage(string path)
+        {
+            LoggerUtils.LogStep(nameof(ReadImage) + $" \"Image - [{path}] read\"");
+            byte[] imgdata = File.ReadAllBytes(path);
+            return new ByteArrayContent(imgdata);
+        }
+
+        public static string ReadFile(string path)
+        {
+            using (StreamReader sr = new StreamReader(path))
+            {
+                LoggerUtils.LogStep(nameof(ReadFile) + $" \"File - [{path}] read\"");
+                return sr.ReadToEnd();
+            }
+        }
+    }
+}

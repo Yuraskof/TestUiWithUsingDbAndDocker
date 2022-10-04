@@ -1,0 +1,9 @@
+{
+  "Url": "https://vk.com/",
+  "ApiHost": "https://api.vk.com/method/",
+  "DatabaseHost": "localhost",
+  "DatabaseUser": "",
+  "DatabaseName": "union_reporting",
+  "DatabasePassword": "",
+  "Variant": "1"
+}
