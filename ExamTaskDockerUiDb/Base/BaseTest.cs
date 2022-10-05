@@ -17,13 +17,14 @@ namespace ExamTaskDockerUiDb.Base
         public static Logger Logger => AqualityServices.Get<Logger>();
         private TestContext.ResultAdapter Result => TestContext.CurrentContext.Result;
         public static readonly TestData testData = JsonUtils.ReadJsonDataFromPath<TestData>(FileConstants.PathToTestData);
+        public static readonly LoginUser loginUser = JsonUtils.ReadJsonDataFromPath<LoginUser>(FileConstants.PathToLoginUser);
+        public static Dictionary<string, string> sqlRequests = FileReader.GetDataFromJson(FileConstants.PathToSqlRequests);
 
         [SetUp]
         public void Setup()
         {
+            FileReader.ClearLogFile();
             Logger.Info($"Start scenario [{ScenarioName}]");
-            AqualityServices.Browser.GoTo(testData.Url);
-            AqualityServices.Browser.Maximize();
         }
 
         [TearDown]

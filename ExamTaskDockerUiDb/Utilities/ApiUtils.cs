@@ -1,6 +1,6 @@
 ﻿namespace ExamTaskDockerUiDb.Utilities
 {
-    public class ApiUtils
+    public static class ApiUtils
     {
         public static HttpResponseMessage PostRequest(string request, HttpContent content) 
         {

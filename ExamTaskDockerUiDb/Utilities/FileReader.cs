@@ -1,15 +1,13 @@
-﻿using Aquality.Selenium.Browsers;
-using Aquality.Selenium.Core.Configurations;
-using ExamTaskDockerUiDb.Constants;
+﻿using ExamTaskDockerUiDb.Constants;
 using Newtonsoft.Json.Linq;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
     public static class FileReader
     {
-        public static Dictionary<string, string> GetMethods(string path)
+        public static Dictionary<string, string> GetDataFromJson(string path)
         {
-            LoggerUtils.LogStep(nameof(GetMethods) + " \"Get api methods\"");
+            LoggerUtils.LogStep(nameof(GetDataFromJson) + " \"Get data from json\"");
             var json = File.ReadAllText(path);
             var jsonObj = JObject.Parse(json);
             Dictionary<string, string> methods = new Dictionary<string, string>();

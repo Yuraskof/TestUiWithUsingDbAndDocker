@@ -9,6 +9,7 @@
         public string DatabaseName { get; set; }
         public string DatabasePassword { get; set; }
         public string Variant { get; set; }
-
+        public string ProjectName { get; set; }
+        public string DateTimeFormat { get; set; }
     }
 }

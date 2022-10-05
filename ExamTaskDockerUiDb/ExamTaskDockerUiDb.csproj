@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Forms\FullSizeImageForm.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Aquality.Selenium" Version="4.9.0" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />

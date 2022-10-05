@@ -1,21 +1,36 @@
-﻿namespace ExamTaskDockerUiDb.Utilities
+﻿using ExamTaskDockerUiDb.Base;
+
+namespace ExamTaskDockerUiDb.Utilities
 {
     public static class StringUtils
     {
-        public static string StringGenerator(int lettersCount)
+        public static List<string> SeparateString(string text, char separator)
         {
-            char[] letters = "ABCDEFGHI_JKLMN-OPQRS!TUVWXYZabc,defghigklmnopqrstuvwxyz".ToCharArray();
-            Random rand = new Random();
-            string word = "";
-
-            for (int j = 1; j <= lettersCount; j++)
+            LoggerUtils.LogStep(nameof(SeparateString) + $" \"Start separating string - [{text}]\"");
+            try
             {
-                int letter = rand.Next(0, letters.Length - 1);
+                string[] separatedData = text.Split(separator);
 
-                word += letters[letter];
+                List<string> userInfoFields = new List<string>();
+
+                for (int i = 0; i < separatedData.Length; i++)
+                {
+                    userInfoFields.Add(separatedData[i].Trim());
+                }
+                return userInfoFields;
             }
-            LoggerUtils.LogStep(nameof(StringGenerator) + $" \"Generated random text - [{word}]\"");
-            return word;
+            catch (Exception e)
+            {
+                LoggerUtils.LogError(nameof(SeparateString) + $" \"Can't separate string - [{text}]\"", e);
+                throw;
+            }
+        }
+
+        public static string ConvertDateTime(string date)
+        {
+            BaseTest.Logger.Info(string.Format("Start converting {0}", date));
+            DateTime dateTime = Convert.ToDateTime(date);
+            return dateTime.ToString(BaseTest.testData.DateTimeFormat);
         }
     }
 }

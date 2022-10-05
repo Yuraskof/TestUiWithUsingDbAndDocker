@@ -3,11 +3,13 @@ using MySql.Data.MySqlClient;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
-    public class ResponseParser
+    public static class ResponseParser
     {
-        public static List<TestModel> testModels = new List<TestModel>();
-        public static void ParseToModel(MySqlDataReader reader)
+        public static List<TestModel> ParseToModel(MySqlDataReader reader)
         {
+            LoggerUtils.LogStep(nameof(ParseToModel) + " \"Start parsing response from database to models\"");
+            List<TestModel> testModels = new List<TestModel>();
+
             while (reader.Read())
             {
                 TestModel testModel = new TestModel();
@@ -24,7 +26,8 @@ namespace ExamTaskDockerUiDb.Utilities
                 testModels.Add(testModel);
             }
             reader.Close();
-            DataBase.mySqlDb.Close();
+            DataBaseUtils.mySqlDb.Close();
+            return testModels;
         }
     }
 }

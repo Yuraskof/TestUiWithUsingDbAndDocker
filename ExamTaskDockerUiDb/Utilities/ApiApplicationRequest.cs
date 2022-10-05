@@ -1,21 +1,21 @@
 ﻿using System.Text;
 using ExamTaskDockerUiDb.Base;
 using ExamTaskDockerUiDb.Constants;
+using ExamTaskDockerUiDb.Models.RequestModels;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
-    public class ApiApplicationRequest
+    public static class ApiApplicationRequest
     {
-        public static Dictionary<string, string> apiMethods = FileReader.GetMethods(FileConstants.PathToApiMethods);
-        private static string host = BaseTest.testData.ApiHost;
+        public static Dictionary<string, string> apiMethods = FileReader.GetDataFromJson(FileConstants.PathToApiMethods);
+        private static readonly string host = BaseTest.testData.ApiHost;
 
-        public static WallPostResponseModel CreatePostOnTheWall(WallPostModel model)
+
+        public static string GetAccessToken(GetAccessTokenModel model)
         {
-            LoggerUtils.LogStep(nameof(CreatePostOnTheWall) + " \"Send post\"");
-            
-            string request = host + apiMethods["postOnTheWall"] + "?"+ "owner_id=" + model.owner_id + "&" +
-                             "message="+model.message + "&" + "access_token=" + model.access_token + "&" + "v=" +
-                             model.v;
+            LoggerUtils.LogStep(nameof(GetAccessToken) + " \"Send request to get access token\"");
+
+            string request = host + apiMethods["getToken"] + "?" + "variant=" + model.variant;
 
             var stringContent = JsonUtils.SerializeJsonData(model);
             var httpContent = new StringContent(stringContent, Encoding.UTF8, FileConstants.MediaType);
@@ -23,13 +23,11 @@ namespace ExamTaskDockerUiDb.Utilities
 
             if (!CheckStatusCode(StatusCodes.OK, response))
             {
-                LoggerUtils.LogStep(nameof(CreatePostOnTheWall) + $" \"Invalid status code - [{response.StatusCode}]\"");
+                LoggerUtils.LogStep(nameof(GetAccessToken) + $" \"Invalid status code - [{response.StatusCode}]\"");
                 return null;
             }
-            string contentString = response.Content.ReadAsStringAsync().Result;
-            return JsonUtils.ReadJsonData<WallPostResponseModel>(contentString);
+            return response.Content.ReadAsStringAsync().Result;
         }
-
 
         public static bool CheckStatusCode(int expectedStatusCode, HttpResponseMessage response)
         {

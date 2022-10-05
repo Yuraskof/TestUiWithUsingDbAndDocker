@@ -1,9 +1,11 @@
 {
-  "Url": "https://vk.com/",
-  "ApiHost": "https://api.vk.com/method/",
+  "Url": "192.168.0.241:8080/web",
+  "ApiHost": "http://192.168.0.241:8080/api/",
   "DatabaseHost": "localhost",
-  "DatabaseUser": "",
+  "DatabaseUser": "login",
   "DatabaseName": "union_reporting",
-  "DatabasePassword": "",
-  "Variant": "1"
+  "DatabasePassword": "password",
+  "Variant": "1",
+  "ProjectName": "Nexage",
+  "DateTimeFormat": "yyyy/MM/dd hh:mm:ss"
 }

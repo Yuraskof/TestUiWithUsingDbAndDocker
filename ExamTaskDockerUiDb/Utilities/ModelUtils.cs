@@ -1,38 +1,68 @@
 ﻿using ExamTaskDockerUiDb.Base;
-using ExamTaskDockerUiDb.Constants;
+using ExamTaskDockerUiDb.Models;
 using ExamTaskDockerUiDb.Models.RequestModels;
-using ExamTaskDockerUiDb.Models.ResponseModels;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
     public static class ModelUtils
     {
-        public static UploadImageResponseModel uploadImageResponse = new UploadImageResponseModel();
-        
-        public static GetLikesRequestModel CreateGetLikesRequestModel(object content)
+        public static GetAccessTokenModel CreateGetAccessTokenModel()
         {
-            LoggerUtils.LogStep(nameof(CreateGetLikesRequestModel) + " \"Start creating get likes request model\"");
-            GetLikesRequestModel model = new GetLikesRequestModel();
-            model.v = BaseTest.testData.ApiVersion;
-            model.owner_id = BaseTest.testData.UserId;
-            model.access_token = BaseTest.testData.Token;
-            model.post_id = content.ToString();
+            LoggerUtils.LogStep(nameof(CreateGetAccessTokenModel) + " \"Start creating get access token model\"");
+            GetAccessTokenModel model = new GetAccessTokenModel();
+            model.variant = BaseTest.testData.Variant;
             return model;
         }
 
-        public static bool FindLikeFromUser(GetLikesResponseModel getLikesResponseModel, WallPostModel postModel)
+        public static bool CheckModelsDates(List<TestModel> modelsFromPage)
         {
-            LoggerUtils.LogStep(nameof(FindLikeFromUser) + " \"Start searching like from desired user\"");
+            LoggerUtils.LogStep(nameof(CheckModelsDates) + " \"Start checking tests sort\"");
+            string previousTestStartTime = null;
 
-            foreach (var user in getLikesResponseModel.response.users)
+            for (int i = 0; i < modelsFromPage.Count; i++)
             {
-                if (user.uid == postModel.owner_id)
+                if (previousTestStartTime == null)
                 {
-                    return true;
+                    previousTestStartTime = modelsFromPage[i].start_time;
+                    continue;
                 }
+
+                if (Convert.ToDateTime(previousTestStartTime) < Convert.ToDateTime(modelsFromPage[i].start_time))
+                {
+                    LoggerUtils.LogStep(nameof(CheckModelsDates) + $" \"The latest date from previous - [{modelsFromPage[i]}]\"");
+                    return false;
+                }
+                previousTestStartTime = modelsFromPage[i].start_time;
+            }
+            return true;
+        }
+
+        public static bool CompareModels(List<TestModel> modelsFromPage, List<TestModel> modelsFromDb)
+        {
+            LoggerUtils.LogStep(nameof(CompareModels) + " \"Start comparing models from database and from the page\"");
+            int matchesCount = 0;
+
+            for (int i = 0; i < modelsFromPage.Count; i++)
+            {
+                foreach (var dbModel in modelsFromDb)
+                {
+                    dbModel.start_time = StringUtils.ConvertDateTime(dbModel.start_time);
+                    modelsFromPage[i].start_time = StringUtils.ConvertDateTime(modelsFromPage[i].start_time);
+
+                    if (dbModel.name == modelsFromPage[i].name && dbModel.start_time == modelsFromPage[i].start_time)
+                    {
+                        matchesCount++;
+                        modelsFromDb.Remove(dbModel);
+                        break;
+                    }
+                }
+            }
+
+            if (matchesCount == modelsFromPage.Count)
+            {
+                return true;
             }
             return false;
         }
-
     }
 }

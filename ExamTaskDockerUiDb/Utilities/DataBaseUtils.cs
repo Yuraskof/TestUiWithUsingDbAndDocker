@@ -10,7 +10,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
         private static void ConnectToDataBase()
         {
-            LoggerUtils.LogStep(nameof(ConnectToDataBase) + " \"Connect to data base\"");
+            LoggerUtils.LogStep(nameof(ConnectToDataBase) + " \"Connect to database\"");
             connect = "Database=" + BaseTest.testData.DatabaseName + ";Datasource=" + BaseTest.testData.DatabaseHost + ";User=" + BaseTest.testData.DatabaseUser + ";Password=" + BaseTest.testData.DatabasePassword;
             mySqlDb = new MySqlConnection(connect);
             mySqlDb.Open();
