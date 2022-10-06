@@ -17,22 +17,14 @@ namespace ExamTaskDockerUiDb.Utilities
         public static bool CheckModelsDates(List<TestModel> modelsFromPage)
         {
             LoggerUtils.LogStep(nameof(CheckModelsDates) + " \"Start checking tests sort\"");
-            string previousTestStartTime = null;
 
-            for (int i = 0; i < modelsFromPage.Count; i++)
+            for (int i = 1; i < modelsFromPage.Count; i++)
             {
-                if (previousTestStartTime == null)
-                {
-                    previousTestStartTime = modelsFromPage[i].start_time;
-                    continue;
-                }
-
-                if (Convert.ToDateTime(previousTestStartTime) < Convert.ToDateTime(modelsFromPage[i].start_time))
+                if (Convert.ToDateTime(modelsFromPage[i-1].start_time) < Convert.ToDateTime(modelsFromPage[i].start_time))
                 {
                     LoggerUtils.LogStep(nameof(CheckModelsDates) + $" \"The latest date from previous - [{modelsFromPage[i]}]\"");
                     return false;
                 }
-                previousTestStartTime = modelsFromPage[i].start_time;
             }
             return true;
         }

@@ -1,5 +1,6 @@
 ﻿using ExamTaskDockerUiDb.Constants;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
@@ -35,6 +36,16 @@ namespace ExamTaskDockerUiDb.Utilities
                 file.Delete();
                 LoggerUtils.LogStep(nameof(ClearLogFile) + $" \"Log file deleted - [{file}]\"");
             }
+        }
+
+        public static string GetProjectName()
+        {
+            LoggerUtils.LogStep(nameof(GetProjectName) + " \"Get project name\"");
+            StackFrame sf = new StackFrame();
+            string className = sf.GetMethod().DeclaringType.ToString();
+            return StringUtils.SeparateString(className, '.')[0];
+
+            //string meth = sf.GetMethod().ToString(); //split ' ' 1
         }
 
         public static ByteArrayContent ReadImage(string path)
