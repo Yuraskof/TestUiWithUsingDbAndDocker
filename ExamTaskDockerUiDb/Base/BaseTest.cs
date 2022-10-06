@@ -19,6 +19,7 @@ namespace ExamTaskDockerUiDb.Base
         public static readonly TestData testData = JsonUtils.ReadJsonDataFromPath<TestData>(FileConstants.PathToTestData);
         public static readonly LoginUser loginUser = JsonUtils.ReadJsonDataFromPath<LoginUser>(FileConstants.PathToLoginUser);
         public static Dictionary<string, string> sqlRequests = FileReader.GetDataFromJson(FileConstants.PathToSqlRequests);
+        public static readonly string sessionID = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
 
         [SetUp]
         public void Setup()

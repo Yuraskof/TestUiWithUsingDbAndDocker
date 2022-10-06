@@ -11,5 +11,6 @@
         public string Variant { get; set; }
         public string ProjectName { get; set; }
         public string DateTimeFormat { get; set; }
+        public string ImageContentType { get; set; }
     }
 }

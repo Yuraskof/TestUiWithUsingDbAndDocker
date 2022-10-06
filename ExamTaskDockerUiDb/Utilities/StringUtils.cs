@@ -1,4 +1,5 @@
 ﻿using ExamTaskDockerUiDb.Base;
+using System.Reflection;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
@@ -31,6 +32,51 @@ namespace ExamTaskDockerUiDb.Utilities
             BaseTest.Logger.Info(string.Format("Start converting {0}", date));
             DateTime dateTime = Convert.ToDateTime(date);
             return dateTime.ToString(BaseTest.testData.DateTimeFormat);
+        }
+
+        public static string CreateGetTestIdSqlRequest()
+        {
+            string testName = TestContext.CurrentContext.Test.Properties.Get("Description").ToString();
+            string request = BaseTest.sqlRequests["getTestId"];
+            return request.Replace("{0}", testName);
+        }
+
+        public static string CreateSendAttachmentsSqlRequest(string content, string contentType, int testId)
+        {
+            return BaseTest.sqlRequests["addAttachments"] + "(" + "'" + content + "'" + ", " + "'" + contentType + "'" + ", " +
+                   testId + ")";
+        }
+
+        public static string CreateSendLogsSqlRequest(string content, int testId)
+        {
+            return BaseTest.sqlRequests["addLogs"] + "(" + "'" + content + "'" + ", " + testId + ")";
+        }
+
+
+        public static string CreateSendTestSqlRequest(string methodName, int projectId, int sessionId)
+        {
+            string testName = TestContext.CurrentContext.Test.Properties.Get("Description").ToString();
+
+            return BaseTest.sqlRequests["SendTest"] + "(" + "'" + testName + "'" + ", " + projectId + ", " + "'" + methodName + "'" + ", " + 
+                                     sessionId + ", " + "'" + Environment.GetEnvironmentVariable("COMPUTERNAME") + "'" + ", " +
+                                     "'" + FileReader.GetBrowserName() + "'" + ")"; 
+        }
+
+        public static string CreateSessionSqlRequest()
+        {
+            int buildNumber = Convert.ToInt32(SeparateString(Assembly.GetExecutingAssembly().GetName().Version.ToString(), '.')[0]);
+
+            return BaseTest.sqlRequests["CreateSession"] + "(" + "'" + BaseTest.sessionID + "'" + ", " + buildNumber + ")"; 
+        }
+
+        public static string CreateGetProjectIdByNameRequest(string name)
+        {
+            return BaseTest.sqlRequests["getProjectIdByName"] + "'" + name + "'";
+        }
+
+        public static string CreateGetSessionIdRequest(string key)
+        {
+            return BaseTest.sqlRequests["getSessionId"] + "'" + key + "'";
         }
     }
 }

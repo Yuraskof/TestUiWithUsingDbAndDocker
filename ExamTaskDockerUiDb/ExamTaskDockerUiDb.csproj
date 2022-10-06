@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\VisualDumps\" />
+    <Folder Include="Resources\VisualDumps\TestPage\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,10 @@
-﻿using ExamTaskDockerUiDb.Constants;
+﻿using Aquality.Selenium.Core.Configurations;
+using ExamTaskDockerUiDb.Constants;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using Aquality.Selenium.Browsers;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
@@ -20,10 +24,9 @@ namespace ExamTaskDockerUiDb.Utilities
             return methods;
         }
 
-        public static string ConvertToBase64(string path)
+        public static string ConvertToBase64(byte[] imageArray)
         {
-            LoggerUtils.LogStep(nameof(ConvertToBase64) + $" \"Start convertation - [{path}]\"");
-            byte[] imageArray = File.ReadAllBytes(path);
+            LoggerUtils.LogStep(nameof(ConvertToBase64) + $" \"Start convertation byte[] to string\"");
             return Convert.ToBase64String(imageArray);
         }
 
@@ -44,8 +47,20 @@ namespace ExamTaskDockerUiDb.Utilities
             StackFrame sf = new StackFrame();
             string className = sf.GetMethod().DeclaringType.ToString();
             return StringUtils.SeparateString(className, '.')[0];
+        }
 
-            //string meth = sf.GetMethod().ToString(); //split ' ' 1
+        public static string GetTestMethodName()
+        {
+            LoggerUtils.LogStep(nameof(GetProjectName) + " \"Get test method name\"");
+            StackFrame sf = new StackFrame();
+            string methodName = sf.GetMethod().ToString();
+            return StringUtils.SeparateString(methodName, ' ')[0];
+        }
+
+        public static string GetBrowserName()
+        {
+            var settingsFile = AqualityServices.Get<ISettingsFile>();
+            return settingsFile.GetValue<string>(".browserName");
         }
 
         public static ByteArrayContent ReadImage(string path)
@@ -62,6 +77,12 @@ namespace ExamTaskDockerUiDb.Utilities
                 LoggerUtils.LogStep(nameof(ReadFile) + $" \"File - [{path}] read\"");
                 return sr.ReadToEnd();
             }
+        }
+
+        public static void SaveScreenshotAsPng(byte[] screenshot)
+        {
+            Image image = Image.FromStream(new MemoryStream(screenshot));
+            image.Save(FileConstants.PathToScreenshot + "screenshot.png", ImageFormat.Png);
         }
     }
 }

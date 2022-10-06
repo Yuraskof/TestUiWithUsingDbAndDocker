@@ -8,6 +8,6 @@
         public const string MediaType = "application/json";
         public const string PathToApiMethods = @"Resources\TestData\ApiMethods.json";
         public const string PathToSqlRequests = @"Resources\TestData\SqlRequests.json";
-        public const string PathToWallPostImage = @"Resources\VisualDumps\FullSizeImageForm\PostImage.png";
+        public const string PathToScreenshot = @"..\..\..\Resources\VisualDumps\TestPage\";
     }
 }
