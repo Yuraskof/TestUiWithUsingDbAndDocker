@@ -1,6 +1,5 @@
 ﻿using ExamTaskDockerUiDb.Base;
 using ExamTaskDockerUiDb.Models;
-using ExamTaskDockerUiDb.Models.RequestModels;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
@@ -54,20 +53,6 @@ namespace ExamTaskDockerUiDb.Utilities
                 return true;
             }
             return false;
-        }
-
-        public static int FindProjectIdByName(string name, List<ProjectModel> model)
-        {
-            LoggerUtils.LogStep(nameof(FindProjectIdByName) + " \"Start searching project id by name\"");
-            for (int i = 0; i < model.Count; i++)
-            {
-                if (model[i].name == name)
-                {
-                    return Convert.ToInt32(model[i].id);
-                }
-            }
-            LoggerUtils.LogStep(nameof(FindProjectIdByName) + " \"Can't find project\"");
-            return -1;
         }
     }
 }

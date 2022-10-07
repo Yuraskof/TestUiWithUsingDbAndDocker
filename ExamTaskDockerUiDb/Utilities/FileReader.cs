@@ -2,8 +2,6 @@
 using ExamTaskDockerUiDb.Constants;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Reflection;
 using System.Text;
 using Aquality.Selenium.Browsers;
@@ -73,25 +71,22 @@ namespace ExamTaskDockerUiDb.Utilities
             return sr.ReadToEnd();
         }
 
-        public static void SaveScreenshotAsPng(byte[] screenshot)
-        {
-            LoggerUtils.LogStep(nameof(SaveScreenshotAsPng));
-            Image image = Image.FromStream(new MemoryStream(screenshot));
-            image.Save(FileConstants.PathToScreenshot + "screenshot.png", ImageFormat.Png);
-        }
 
         public static int GetBuildNumber()
         {
+            LoggerUtils.LogStep(nameof(GetBuildNumber));
             return Convert.ToInt32(StringUtils.SeparateString(Assembly.GetExecutingAssembly().GetName().Version.ToString(), '.')[0]);
         }
         
         public static string GetTestName()
         {
+            LoggerUtils.LogStep(nameof(GetTestName));
             return TestContext.CurrentContext.Test.Properties.Get("Description").ToString();
         }
 
         public static string GetHostName()
         {
+            LoggerUtils.LogStep(nameof(GetHostName));
             return Environment.GetEnvironmentVariable("COMPUTERNAME");
         }
     }

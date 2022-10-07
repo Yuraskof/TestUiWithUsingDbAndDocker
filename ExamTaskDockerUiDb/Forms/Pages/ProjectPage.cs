@@ -2,7 +2,6 @@
 using Aquality.Selenium.Elements.Interfaces;
 using Aquality.Selenium.Forms;
 using ExamTaskDockerUiDb.Models;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using OpenQA.Selenium;
 
 namespace ExamTaskDockerUiDb.Forms.Pages

@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using ExamTaskDockerUiDb.Base;
 using ExamTaskDockerUiDb.Constants;
-using ExamTaskDockerUiDb.Models.RequestModels;
+using ExamTaskDockerUiDb.Models;
 
 namespace ExamTaskDockerUiDb.Utilities
 {

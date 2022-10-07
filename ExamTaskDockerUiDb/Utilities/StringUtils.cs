@@ -1,6 +1,7 @@
 ﻿using ExamTaskDockerUiDb.Base;
 using ExamTaskDockerUiDb.Constants;
 using ExamTaskDockerUiDb.Models;
+using System.Text.RegularExpressions;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
@@ -34,14 +35,7 @@ namespace ExamTaskDockerUiDb.Utilities
             DateTime dateTime = Convert.ToDateTime(date);
             return dateTime.ToString(BaseTest.testData.DateTimeFormat);
         }
-
-        public static string CreateGetTestIdSqlRequest(TestModel model)
-        {
-            LoggerUtils.LogStep(nameof(CreateGetTestIdSqlRequest) + " \"Start creating get test id sql request\"");
-            string request = BaseTest.sqlRequests["getTestId"];
-            return request.Replace("{0}", model.name);
-        }
-
+        
         public static string CreateGetTestModelSqlRequest(TestModel model)
         {
             LoggerUtils.LogStep(nameof(CreateGetTestModelSqlRequest) + " \"Start creating get test model by name sql request\"");
@@ -61,7 +55,6 @@ namespace ExamTaskDockerUiDb.Utilities
             LoggerUtils.LogStep(nameof(CreateSendLogsSqlRequest) + " \"Start creating send logs sql request\"");
             return BaseTest.sqlRequests["addLogs"] + "(" + "'" + content + "'" + ", " + testId + ")";
         }
-
 
         public static string CreateSendTestSqlRequest(TestModel model)
         {
@@ -94,6 +87,19 @@ namespace ExamTaskDockerUiDb.Utilities
             LoggerUtils.LogStep(nameof(ConvertLogsToString) + " \"Start converting file to string\"");
             string logs = FileReader.ReadFile(FileConstants.PathToLogFile);
             return logs.Replace("'", "");
+        }
+
+        public static string FormatLogs(string logs)
+        {
+            LoggerUtils.LogStep(nameof(FormatLogs) + " \"Start formating logs\"");
+            return logs.Replace("\r\n", " ").Replace("   ", " ").Replace("\\", "").Replace("  ", " ");
+        }
+
+        public static string RegexReplace(string pattern, string replacement, string text)
+        {
+            LoggerUtils.LogStep(nameof(RegexReplace) + $" \"Start replacing string -[{text}]\"");
+            Regex regex = new Regex(pattern);
+            return regex.Replace(text, replacement);
         }
     }
 }

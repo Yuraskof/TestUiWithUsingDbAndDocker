@@ -1,10 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using Aquality.Selenium.Forms;
 using ExamTaskDockerUiDb.Models;
 using Aquality.Selenium.Elements.Interfaces;
 using ExamTaskDockerUiDb.Utilities;
-using Humanizer;
 
 namespace ExamTaskDockerUiDb.Forms.Pages
 {
@@ -17,23 +15,26 @@ namespace ExamTaskDockerUiDb.Forms.Pages
         private ITextBox StartTime => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Time info\")]//following-sibling::p[contains (text(), \"Start time\")]"), "Start time text box");
         private ITextBox Duration => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Time info\")]//following-sibling::p[contains (text(), \"Duration\")]"), "Duration text box");
         private ITextBox EndTime => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Time info\")]//following-sibling::p[contains (text(), \"End time\")]"), "End time text box");
-
+        private ITextBox EnvionmentNameTextBox => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Environment\")]//following-sibling::p"), "Environment name text box");
+        private ITextBox BrowserNameTextBox => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Browser\")]//following-sibling::p"), "Browser name text box");
+        private ITextBox LogsTextBox => ElementFactory.GetTextBox(By.XPath("//div[@class= \"panel-heading\"][contains (text(), \"Logs\")]//following::td[contains (text(), \"Action\")]"), "Logs text box");
+        private ILabel ScreenshotLabel => ElementFactory.GetLabel(By.XPath("//div[@class= \"panel-heading\"][contains (text(), \"Attachments\")]//following-sibling::table//img"), "Screenshot label");
 
         private TestModel testModel;
 
-        
         public TestPage() : base(By.XPath("//div[contains (@class, \"fail-reason-block\")]"), "Test page")
         {
             testModel = new TestModel();
         }
 
-        public void GeTestModelFromPage() //TestModel
+        public TestModel GeTestModelFromPage() 
         {
             SetTestNameFromPage();
             SetTestMethodFromPage();
             SetStartTimeFromPage();
-
-            //return testModel;
+            SetEnvironmentNameFromPage();
+            SetBrowserNameFromPage();
+            return testModel;
         }
 
         public string GetProjectNameFromPage()
@@ -44,6 +45,25 @@ namespace ExamTaskDockerUiDb.Forms.Pages
         private void SetTestNameFromPage()
         {
             testModel.name = TestNameTextBox.GetText();
+        }
+
+        public string GetLogsFromPage()
+        {
+            return LogsTextBox.GetText();
+        }
+        public string GetImgFromPage()
+        {
+            return ScreenshotLabel.GetAttribute("src");
+        }
+
+        private void SetEnvironmentNameFromPage()
+        {
+            testModel.env = EnvionmentNameTextBox.GetText();
+        }
+
+        private void SetBrowserNameFromPage()
+        {
+            testModel.browser = BrowserNameTextBox.GetText();
         }
 
         private void SetTestMethodFromPage()
@@ -63,8 +83,7 @@ namespace ExamTaskDockerUiDb.Forms.Pages
         private void SetStartTimeFromPage()
         {
             string date = StartTime.GetText();
-            Regex regex = new Regex(": ");
-            date = regex.Replace(date, "!");
+            date = StringUtils.RegexReplace(": ", "!", date);
             date = StringUtils.SeparateString(date,'!')[1];
             date = StringUtils.ConvertDateTime(date);
             testModel.start_time = date;
@@ -88,7 +107,7 @@ namespace ExamTaskDockerUiDb.Forms.Pages
             if (model.status_id == "")
             {
                 var endTimeStrings = StringUtils.SeparateString(endTime, ':');
-                return endTimeStrings.Count == 1;
+                return endTimeStrings[1] == "";
             }
             return false;
         }

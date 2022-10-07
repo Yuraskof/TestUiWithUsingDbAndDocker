@@ -1,8 +1,8 @@
-﻿namespace ExamTaskDockerUiDb.Models.RequestModels
+﻿namespace ExamTaskDockerUiDb.Models
 {
     public class GetAccessTokenModel
     {
         public string variant { get; set; }
-        
+
     }
 }

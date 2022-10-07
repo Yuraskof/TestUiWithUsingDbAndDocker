@@ -3,7 +3,7 @@ using ExamTaskDockerUiDb.Base;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
-    public class LoggerUtils
+    public static class LoggerUtils
     {
         private static void LogStep(string stepInfo, string stepType)
         {

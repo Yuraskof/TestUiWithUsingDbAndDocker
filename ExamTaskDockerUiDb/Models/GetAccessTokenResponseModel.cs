@@ -1,4 +1,4 @@
-﻿namespace ExamTaskDockerUiDb.Models.ResponseModels
+﻿namespace ExamTaskDockerUiDb.Models
 {
     public class GetAccessTokenResponseModel
     {
