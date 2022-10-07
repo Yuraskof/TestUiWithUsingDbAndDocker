@@ -1,5 +1,6 @@
 ﻿using ExamTaskDockerUiDb.Base;
-using System.Reflection;
+using ExamTaskDockerUiDb.Constants;
+using ExamTaskDockerUiDb.Models;
 
 namespace ExamTaskDockerUiDb.Utilities
 {
@@ -34,49 +35,65 @@ namespace ExamTaskDockerUiDb.Utilities
             return dateTime.ToString(BaseTest.testData.DateTimeFormat);
         }
 
-        public static string CreateGetTestIdSqlRequest()
+        public static string CreateGetTestIdSqlRequest(TestModel model)
         {
-            string testName = TestContext.CurrentContext.Test.Properties.Get("Description").ToString();
+            LoggerUtils.LogStep(nameof(CreateGetTestIdSqlRequest) + " \"Start creating get test id sql request\"");
             string request = BaseTest.sqlRequests["getTestId"];
-            return request.Replace("{0}", testName);
+            return request.Replace("{0}", model.name);
+        }
+
+        public static string CreateGetTestModelSqlRequest(TestModel model)
+        {
+            LoggerUtils.LogStep(nameof(CreateGetTestModelSqlRequest) + " \"Start creating get test model by name sql request\"");
+            string request = BaseTest.sqlRequests["getTestInfo"];
+            return request.Replace("{0}", model.name);
         }
 
         public static string CreateSendAttachmentsSqlRequest(string content, string contentType, int testId)
         {
+            LoggerUtils.LogStep(nameof(CreateSendAttachmentsSqlRequest) + " \"Start creating Send attachment sql request\"");
             return BaseTest.sqlRequests["addAttachments"] + "(" + "'" + content + "'" + ", " + "'" + contentType + "'" + ", " +
                    testId + ")";
         }
 
         public static string CreateSendLogsSqlRequest(string content, int testId)
         {
+            LoggerUtils.LogStep(nameof(CreateSendLogsSqlRequest) + " \"Start creating send logs sql request\"");
             return BaseTest.sqlRequests["addLogs"] + "(" + "'" + content + "'" + ", " + testId + ")";
         }
 
 
-        public static string CreateSendTestSqlRequest(string methodName, int projectId, int sessionId)
+        public static string CreateSendTestSqlRequest(TestModel model)
         {
-            string testName = TestContext.CurrentContext.Test.Properties.Get("Description").ToString();
-
-            return BaseTest.sqlRequests["SendTest"] + "(" + "'" + testName + "'" + ", " + projectId + ", " + "'" + methodName + "'" + ", " + 
-                                     sessionId + ", " + "'" + Environment.GetEnvironmentVariable("COMPUTERNAME") + "'" + ", " +
-                                     "'" + FileReader.GetBrowserName() + "'" + ")"; 
+            LoggerUtils.LogStep(nameof(CreateSendTestSqlRequest) + " \"Start creating Send test  sql request\"");
+            return BaseTest.sqlRequests["SendTest"] + "(" + "'" + model.name + "'" + ", " + model.project_id + ", " + "'" + model.method_name + "'" + ", " + 
+                   model.session_id + ", " + "'" + model.env + "'" + ", " +
+                   "'" + model.browser + "'" + ")"; 
         }
 
-        public static string CreateSessionSqlRequest()
+        public static string CreateSessionSqlRequest(SessionModel model)
         {
-            int buildNumber = Convert.ToInt32(SeparateString(Assembly.GetExecutingAssembly().GetName().Version.ToString(), '.')[0]);
-
-            return BaseTest.sqlRequests["CreateSession"] + "(" + "'" + BaseTest.sessionID + "'" + ", " + buildNumber + ")"; 
+            LoggerUtils.LogStep(nameof(CreateSessionSqlRequest) + " \"Start creating Set session sql request\"");
+            return BaseTest.sqlRequests["CreateSession"] + "(" + "'" + model.session_key + "'" + ", " + model.build_number + ")"; 
         }
 
         public static string CreateGetProjectIdByNameRequest(string name)
         {
+            LoggerUtils.LogStep(nameof(CreateGetProjectIdByNameRequest) + " \"Start creating get project id sql request\"");
             return BaseTest.sqlRequests["getProjectIdByName"] + "'" + name + "'";
         }
 
-        public static string CreateGetSessionIdRequest(string key)
+        public static string CreateGetSessionIdRequest(SessionModel model)
         {
-            return BaseTest.sqlRequests["getSessionId"] + "'" + key + "'";
+            LoggerUtils.LogStep(nameof(CreateGetSessionIdRequest) + " \"Start creating get session sql request\"");
+            return BaseTest.sqlRequests["getSessionId"] + "'" + model.session_key + "'";
+        }
+
+        public static string ConvertLogsToString()
+        {
+            LoggerUtils.LogStep(nameof(ConvertLogsToString) + " \"Start converting file to string\"");
+            string logs = FileReader.ReadFile(FileConstants.PathToLogFile);
+            return logs.Replace("'", "");
         }
     }
 }

@@ -1,18 +1,12 @@
 using Aquality.Selenium.Browsers;
 using ExamTaskDockerUiDb.Base;
+using ExamTaskDockerUiDb.Constants;
 using ExamTaskDockerUiDb.Forms.Pages;
 using ExamTaskDockerUiDb.Models;
 using ExamTaskDockerUiDb.Models.RequestModels;
 using ExamTaskDockerUiDb.Utilities;
 using OpenQA.Selenium;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Reflection;
-using ExamTaskDockerUiDb.Constants;
-using ExamTaskDockerUiDb.Forms;
-using System.IO;
-using System.Text;
 
 namespace ExamTaskDockerUiDb
 {
@@ -37,7 +31,7 @@ namespace ExamTaskDockerUiDb
             Logger.Info("Step 2 completed.");
 
             //allProjectsPage.GoToProjectPage(testData.ProjectName);
-            //ProjectPage projectPage = new ProjectPage();
+            ProjectPage projectPage = new ProjectPage();
             //Assert.IsTrue(projectPage.State.WaitForDisplayed(), $"{projectPage.Name} should be presented");
             //List<TestModel> testModelsFromPage = projectPage.GetTestsNames();
             //List<TestModel> testModelsFromDb = ResponseParser.ParseToTestModel(DataBaseUtils.SendRequest(sqlRequests["projectId1Tests"]));
@@ -52,8 +46,10 @@ namespace ExamTaskDockerUiDb
             //AqualityServices.Browser.GoBack();
             Assert.IsTrue(allProjectsPage.State.WaitForDisplayed(), $"{allProjectsPage.Name} should be presented");
             allProjectsPage.OpenAddProjectForm();
+            ProjectModel projectModel = new ProjectModel();
+            projectModel.name = FileReader.GetProjectName();
             Assert.IsTrue(allProjectsPage.addProjectForm.State.WaitForDisplayed(), $"{allProjectsPage.addProjectForm.Name} should be presented");
-            //allProjectsPage.addProjectForm.AddProject(FileReader.GetProjectName());
+            //allProjectsPage.addProjectForm.AddProject(projectModel.name);
             allProjectsPage.CloseAddProjectForm();
             Assert.IsTrue(allProjectsPage.addProjectForm.State.WaitForNotDisplayed(), $"{allProjectsPage.addProjectForm.Name} shouldn't be presented");
             AqualityServices.Browser.Refresh();
@@ -61,34 +57,47 @@ namespace ExamTaskDockerUiDb
             Logger.Info("Step 4 completed.");
 
             allProjectsPage.GoToProjectPage(FileReader.GetProjectName());
-            string projectId = ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetProjectIdByNameRequest(FileReader.GetProjectName())));
-            DataBaseUtils.SendRequest(StringUtils.CreateSessionSqlRequest());
-            string sessionId = ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetSessionIdRequest(BaseTest.sessionID)));
+            projectModel.id = Convert.ToInt32(ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetProjectIdByNameRequest(FileReader.GetProjectName()))));
+            
+            SessionModel sessionModel = new SessionModel();
+            sessionModel.build_number = FileReader.GetBuildNumber();
+            sessionModel.session_key = sessionID;
+            DataBaseUtils.SendRequest(StringUtils.CreateSessionSqlRequest(sessionModel));
+            sessionModel.id = Convert.ToInt32(ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetSessionIdRequest(sessionModel))));
+
+            TestModel testModel = new TestModel();
             StackFrame sf = new StackFrame();
-            string methodName = StringUtils.SeparateString(sf.GetMethod().ToString(), ' ')[1];
-            DataBaseUtils.SendRequest(StringUtils.CreateSendTestSqlRequest(methodName, Convert.ToInt32(projectId), Convert.ToInt32(sessionId)));
-            string testId = ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetTestIdSqlRequest()));
-            byte[] screenshot = AqualityServices.Browser.GetScreenshot();
-            FileReader.SaveScreenshotAsPng(screenshot);
-            string screenshotString = FileReader.ConvertToBase64(screenshot);
-            DataBaseUtils.SendRequest(StringUtils.CreateSendAttachmentsSqlRequest(screenshotString, testData.ImageContentType, Convert.ToInt32(testId)));
-            string logs;
+            testModel.session_id = sessionModel.id;
+            testModel.project_id = projectModel.id;
+            testModel.name = FileReader.GetTestName();
+            testModel.env = FileReader.GetHostName();
+            testModel.browser = FileReader.GetBrowserName();
+            testModel.method_name = StringUtils.SeparateString(sf.GetMethod().ToString(), ' ')[1];
+            DataBaseUtils.SendRequest(StringUtils.CreateSendTestSqlRequest(testModel));
+            testModel = ResponseParser.ParseToTestModel(DataBaseUtils.SendRequest(StringUtils.CreateGetTestModelSqlRequest(testModel)))[0];
 
-            using (StreamReader streamReader = new StreamReader(FileConstants.PathToLogFile, Encoding.UTF8))
+            string screenshotString = AqualityServices.Browser.Driver.GetScreenshot().AsBase64EncodedString;
+            AqualityServices.Browser.Driver.GetScreenshot().SaveAsFile(FileConstants.PathToScreenshot + "screenshot.png");
+            DataBaseUtils.SendRequest(StringUtils.CreateSendAttachmentsSqlRequest(screenshotString, testData.ImageContentType, testModel.id));
+            string logs = StringUtils.ConvertLogsToString();
+            DataBaseUtils.SendRequest(StringUtils.CreateSendLogsSqlRequest(logs, testModel.id));
+            Assert.IsTrue(projectPage.CheckTheProjectSuccessfullyAdded(testModel), "Project should exist");
+            Logger.Info("Step 5 completed.");
+
+            projectPage.GoToTestPage(testModel);
+            TestPage testPage = new TestPage();
+            Assert.IsTrue(projectPage.testPage.State.WaitForDisplayed(), $"{projectPage.testPage.Name} shouldn't be presented");
+
+            Assert.Multiple(() =>
             {
-                logs = streamReader.ReadToEnd();
-                logs.Replace("\"", "'");
-            }
-            DataBaseUtils.SendRequest(StringUtils.CreateSendLogsSqlRequest(logs, Convert.ToInt32(testId)));
+                Assert.IsTrue(projectPage.testPage.GetProjectNameFromPage() == projectModel.name, "Names should be eqal");
+                Assert.IsTrue(projectPage.testPage.CheckStatusOnPage(testModel), "Wrong status");
+                Assert.IsTrue(projectPage.testPage.CheckEndTimeOnPage(testModel), "Wrong end time");
+                Assert.IsTrue(projectPage.testPage.CheckDuration(testModel), "Wrong duration time");
 
+            });
+            projectPage.testPage.GeTestModelFromPage();
 
-
-
-
-
-
-            //List<ProjectModel> projects = ResponseParser.ParseToProjectModel(DataBaseUtils.SendRequest(sqlRequests["getProjectInfoByName"]));
-            //int newProjectId = ModelUtils.FindProjectIdByName(FileReader.GetProjectName(), projects);
 
         }
     }

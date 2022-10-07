@@ -38,7 +38,6 @@ namespace ExamTaskDockerUiDb.Utilities
             {
                 foreach (var dbModel in modelsFromDb)
                 {
-                    dbModel.start_time = StringUtils.ConvertDateTime(dbModel.start_time);
                     modelsFromPage[i].start_time = StringUtils.ConvertDateTime(modelsFromPage[i].start_time);
 
                     if (dbModel.name == modelsFromPage[i].name && dbModel.start_time == modelsFromPage[i].start_time)

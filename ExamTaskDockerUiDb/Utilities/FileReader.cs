@@ -4,7 +4,10 @@ using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Reflection;
+using System.Text;
 using Aquality.Selenium.Browsers;
+
 
 namespace ExamTaskDockerUiDb.Utilities
 {
@@ -49,16 +52,9 @@ namespace ExamTaskDockerUiDb.Utilities
             return StringUtils.SeparateString(className, '.')[0];
         }
 
-        public static string GetTestMethodName()
-        {
-            LoggerUtils.LogStep(nameof(GetProjectName) + " \"Get test method name\"");
-            StackFrame sf = new StackFrame();
-            string methodName = sf.GetMethod().ToString();
-            return StringUtils.SeparateString(methodName, ' ')[0];
-        }
-
         public static string GetBrowserName()
         {
+            LoggerUtils.LogStep(nameof(GetBrowserName) + " \"Get browser name\"");
             var settingsFile = AqualityServices.Get<ISettingsFile>();
             return settingsFile.GetValue<string>(".browserName");
         }
@@ -72,17 +68,31 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static string ReadFile(string path)
         {
-            using (StreamReader sr = new StreamReader(path))
-            {
-                LoggerUtils.LogStep(nameof(ReadFile) + $" \"File - [{path}] read\"");
-                return sr.ReadToEnd();
-            }
+            LoggerUtils.LogStep(nameof(ReadFile) + $" \"File - [{path}] read\"");
+            StreamReader sr = new StreamReader(path, Encoding.UTF8);
+            return sr.ReadToEnd();
         }
 
         public static void SaveScreenshotAsPng(byte[] screenshot)
         {
+            LoggerUtils.LogStep(nameof(SaveScreenshotAsPng));
             Image image = Image.FromStream(new MemoryStream(screenshot));
             image.Save(FileConstants.PathToScreenshot + "screenshot.png", ImageFormat.Png);
+        }
+
+        public static int GetBuildNumber()
+        {
+            return Convert.ToInt32(StringUtils.SeparateString(Assembly.GetExecutingAssembly().GetName().Version.ToString(), '.')[0]);
+        }
+        
+        public static string GetTestName()
+        {
+            return TestContext.CurrentContext.Test.Properties.Get("Description").ToString();
+        }
+
+        public static string GetHostName()
+        {
+            return Environment.GetEnvironmentVariable("COMPUTERNAME");
         }
     }
 }
