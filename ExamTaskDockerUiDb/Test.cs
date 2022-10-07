@@ -84,7 +84,6 @@ namespace ExamTaskDockerUiDb
             Logger.Info("Step 5 completed.");
 
             projectPage.GoToTestPage(testModel);
-            TestPage testPage = new TestPage();
             Assert.IsTrue(projectPage.testPage.State.WaitForDisplayed(), $"{projectPage.testPage.Name} shouldn't be presented");
 
             Assert.Multiple(() =>
