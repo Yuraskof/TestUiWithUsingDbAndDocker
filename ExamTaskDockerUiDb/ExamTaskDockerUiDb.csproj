@@ -40,8 +40,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\VisualDumps\TestPage\" />
-  </ItemGroup>
-
 </Project>
