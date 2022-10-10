@@ -8,26 +8,25 @@ namespace ExamTaskDockerUiDb.Utilities
         public static List<TestModel> ParseToTestModel(MySqlDataReader reader)
         {
             LoggerUtils.LogStep(nameof(ParseToTestModel) + " \"Start parsing response from database to test models\"");
-            List<TestModel> testModels = new List<TestModel>();
+            List<TestModel> testModels = new();
+            DateTime startTime = DateTime.Now;
 
-            while (reader.Read())
+            while (reader.Read() || DateTime.Now > startTime.AddSeconds(Convert.ToInt32(FileUtils.TestData.MaxSecondsForWhileExecution)))
             {
-                TestModel testModel = new TestModel();
-                testModel.id = Convert.ToInt32(reader[0].ToString());
-                testModel.project_id = Convert.ToInt32(reader[1].ToString());
-                testModel.name = reader[2].ToString();
-                testModel.status_id = reader[3].ToString();
-                testModel.method_name = reader[4].ToString();
-                testModel.session_id = Convert.ToInt32(reader[5].ToString());
-                testModel.start_time = StringUtils.ConvertDateTime(reader[6].ToString());
-                testModel.end_time = reader[7].ToString();
-                testModel.env = reader[8].ToString();
-                testModel.browser = reader[9].ToString();
+                TestModel testModel = new();
+                testModel.Id = Convert.ToInt32(reader[0].ToString());
+                testModel.ProjectId = Convert.ToInt32(reader[1].ToString());
+                testModel.Name = reader[2].ToString();
+                testModel.StatusId = reader[3].ToString();
+                testModel.MethodName = reader[4].ToString();
+                testModel.SessionId = Convert.ToInt32(reader[5].ToString());
+                testModel.StartTime = StringUtils.ConvertDateTime(reader[6].ToString());
+                testModel.EndTime = reader[7].ToString();
+                testModel.Env = reader[8].ToString();
+                testModel.Browser = reader[9].ToString();
 
                 testModels.Add(testModel);
             }
-            reader.Close();
-            DataBaseUtils.mySqlDb.Close();
             return testModels;
         }
 
@@ -36,27 +35,25 @@ namespace ExamTaskDockerUiDb.Utilities
             LoggerUtils.LogStep(nameof(ParseToProjectModel) + " \"Start parsing response from database to string\"");
             reader.Read();
             string result = reader[0].ToString();
-            reader.Close();
-            DataBaseUtils.mySqlDb.Close();
             return result;
         }
 
         public static List<ProjectModel> ParseToProjectModel(MySqlDataReader reader)
         {
             LoggerUtils.LogStep(nameof(ParseToProjectModel) + " \"Start parsing response from database to project models\"");
-            List<ProjectModel> testModels = new List<ProjectModel>();
+            List<ProjectModel> testModels = new();
+            int iterations = 0;
 
-            while (reader.Read())
+            while (reader.Read() || iterations < Convert.ToInt32(FileUtils.TestData.MaxSecondsForWhileExecution))
             {
-                ProjectModel model = new ProjectModel();
+                ProjectModel model = new();
 
-                model.name = reader[0].ToString();
-                model.id = Convert.ToInt32(reader[1].ToString());
+                model.Name = reader[0].ToString();
+                model.Id = Convert.ToInt32(reader[1].ToString());
                 
                 testModels.Add(model);
+                iterations++;
             }
-            reader.Close();
-            DataBaseUtils.mySqlDb.Close();
             return testModels;
         }
     }

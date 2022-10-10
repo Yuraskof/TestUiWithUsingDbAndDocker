@@ -17,87 +17,88 @@ namespace ExamTaskDockerUiDb
             GetAccessTokenModel model = ModelUtils.CreateGetAccessTokenModel();
             string accessToken = ApiApplicationRequest.GetAccessToken(model);
             Assert.NotNull(accessToken, "Acess token should be exist");
-            Logger.Info("Step 1 completed.");
+            LoggerUtils.Logger.Info("Step 1 completed.");
 
             AqualityServices.Browser.GoTo(BrowserUtils.CreateUrlWithCredentials());
             AqualityServices.Browser.Maximize();
-            AllProjectsPage allProjectsPage = new AllProjectsPage();
+            AllProjectsPage allProjectsPage = new();
             Assert.IsTrue(allProjectsPage.State.WaitForDisplayed(), $"{allProjectsPage.Name} should be presented");
             AqualityServices.Browser.Driver.Manage().Cookies.AddCookie(new Cookie("token", accessToken));
             AqualityServices.Browser.Refresh();
             string footerText = allProjectsPage.GetFooterText();
-            Assert.IsTrue(StringUtils.SeparateString(footerText, ':')[1] == testData.Variant, "Values should be equal");
-            Logger.Info("Step 2 completed.");
+            Assert.IsTrue(StringUtils.SeparateString(footerText, ':')[1] == FileUtils.TestData.Variant, "Values should be equal");
+            LoggerUtils.Logger.Info("Step 2 completed.");
 
-            //allProjectsPage.GoToProjectPage(testData.ProjectName);
-            ProjectPage projectPage = new ProjectPage();
-            //Assert.IsTrue(projectPage.State.WaitForDisplayed(), $"{projectPage.Name} should be presented");
-            //List<TestModel> testModelsFromPage = projectPage.GetTestsNames();
-            //List<TestModel> testModelsFromDb = ResponseParser.ParseToTestModel(DataBaseUtils.SendRequest(sqlRequests["projectId1Tests"]));
+            allProjectsPage.GoToProjectPage(FileUtils.TestData.ProjectName);
+            ProjectPage projectPage = new();
+            projectPage.State.WaitForDisplayed();
+            List<TestModel> testModelsFromPage = projectPage.GetTestsNames();
+            List<TestModel> testModelsFromDb = ResponseParser.ParseToTestModel(DataBaseUtils.SendRequest(FileUtils.SqlRequests["projectId1Tests"]));
 
-            //Assert.Multiple(() =>
-            //{
-            //    Assert.IsTrue(ModelUtils.CheckModelsDates(testModelsFromPage), "Dates should be descending");
-            //    Assert.IsTrue(ModelUtils.CompareModels(testModelsFromPage, testModelsFromDb), "Values should be equal");
-            //});
-            //Logger.Info("Step 3 completed.");
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(ModelUtils.IsModelsDatesDescending(testModelsFromPage), "Dates should be descending");
+                Assert.IsTrue(ModelUtils.IsDbContainsModelsFromPage(testModelsFromPage, testModelsFromDb), "Values should be equal");
+            });
+            LoggerUtils.Logger.Info("Step 3 completed.");
 
-            //AqualityServices.Browser.GoBack();
-            Assert.IsTrue(allProjectsPage.State.WaitForDisplayed(), $"{allProjectsPage.Name} should be presented");
-            allProjectsPage.OpenAddProjectForm();
-            ProjectModel projectModel = new ProjectModel();
-            projectModel.name = FileReader.GetProjectName();
-            Assert.IsTrue(allProjectsPage.addProjectForm.State.WaitForDisplayed(), $"{allProjectsPage.addProjectForm.Name} should be presented");
-            //allProjectsPage.addProjectForm.AddProject(projectModel.name);
+            AqualityServices.Browser.GoBack();
+            allProjectsPage.State.WaitForDisplayed();
+            allProjectsPage.OpenAddProjectFormAndSwitchToNewFrame();
+            ProjectModel projectModel = new();
+            projectModel.Name = EnvironmentUtil.GetProjectName();
+            allProjectsPage.AddProjectForm.State.WaitForDisplayed();
+            allProjectsPage.AddProjectForm.AddProject(projectModel.Name);
+            Assert.IsTrue(allProjectsPage.AddProjectForm.IsProjectSuccessfullyAdded(), "Success message should be presented");
             allProjectsPage.CloseAddProjectForm();
-            Assert.IsTrue(allProjectsPage.addProjectForm.State.WaitForNotDisplayed(), $"{allProjectsPage.addProjectForm.Name} shouldn't be presented");
+            Assert.IsTrue(allProjectsPage.AddProjectForm.State.WaitForNotDisplayed(), $"{allProjectsPage.AddProjectForm.Name} shouldn't be presented");
             AqualityServices.Browser.Refresh();
-            Assert.IsTrue(allProjectsPage.ProjectIsPresented(FileReader.GetProjectName()), "Project should be presented");
-            Logger.Info("Step 4 completed.");
+            Assert.IsTrue(allProjectsPage.IsProjectPresented(EnvironmentUtil.GetProjectName()), "Project should be presented");
+            LoggerUtils.Logger.Info("Step 4 completed.");
 
-            allProjectsPage.GoToProjectPage(FileReader.GetProjectName());
-            projectModel.id = Convert.ToInt32(ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetProjectIdByNameRequest(FileReader.GetProjectName()))));
+            allProjectsPage.GoToProjectPage(EnvironmentUtil.GetProjectName());
+            projectModel.Id = Convert.ToInt32(ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetProjectIdByNameRequest(EnvironmentUtil.GetProjectName()))));
             
-            SessionModel sessionModel = new SessionModel();
-            sessionModel.build_number = FileReader.GetBuildNumber();
-            sessionModel.session_key = sessionID;
+            SessionModel sessionModel = new();
+            sessionModel.BuildNumber = EnvironmentUtil.GetBuildNumber();
+            sessionModel.SessionKey = FileUtils.SessionId;
             DataBaseUtils.SendRequest(StringUtils.CreateSessionSqlRequest(sessionModel));
-            sessionModel.id = Convert.ToInt32(ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetSessionIdRequest(sessionModel))));
+            sessionModel.Id = Convert.ToInt32(ResponseParser.ParseToString(DataBaseUtils.SendRequest(StringUtils.CreateGetSessionIdRequest(sessionModel))));
 
-            TestModel testModel = new TestModel();
-            StackFrame sf = new StackFrame();
-            testModel.session_id = sessionModel.id;
-            testModel.project_id = projectModel.id;
-            testModel.name = FileReader.GetTestName();
-            testModel.env = FileReader.GetHostName();
-            testModel.browser = FileReader.GetBrowserName();
-            testModel.method_name = StringUtils.SeparateString(sf.GetMethod().ToString(), ' ')[1];
+            TestModel testModel = new();
+            StackFrame sf = new();
+            testModel.SessionId = sessionModel.Id;
+            testModel.ProjectId = projectModel.Id;
+            testModel.Name = EnvironmentUtil.GetTestName();
+            testModel.Env = EnvironmentUtil.GetHostName();
+            testModel.Browser = EnvironmentUtil.GetBrowserName();
+            testModel.MethodName = StringUtils.SeparateString(sf.GetMethod().ToString(), ' ')[1];
             DataBaseUtils.SendRequest(StringUtils.CreateSendTestSqlRequest(testModel));
             testModel = ResponseParser.ParseToTestModel(DataBaseUtils.SendRequest(StringUtils.CreateGetTestModelSqlRequest(testModel)))[0];
 
             AqualityServices.Browser.Driver.GetScreenshot().SaveAsFile(FileConstants.PathToScreenshot + "screenshot.png");
             string screenshotString = AqualityServices.Browser.Driver.GetScreenshot().AsBase64EncodedString;
-            DataBaseUtils.SendRequest(StringUtils.CreateSendAttachmentsSqlRequest(screenshotString, testData.ImageContentType, testModel.id));
+            DataBaseUtils.SendRequest(StringUtils.CreateSendAttachmentsSqlRequest(screenshotString, FileUtils.TestData.ImageContentType, testModel.Id));
             string logs = StringUtils.ConvertLogsToString();
-            DataBaseUtils.SendRequest(StringUtils.CreateSendLogsSqlRequest(logs, testModel.id));
-            Assert.IsTrue(projectPage.CheckTheProjectSuccessfullyAdded(testModel), "Project should exist");
-            Logger.Info("Step 5 completed.");
+            DataBaseUtils.SendRequest(StringUtils.CreateSendLogsSqlRequest(logs, testModel.Id));
+            Assert.IsTrue(projectPage.IsProjectSuccessfullyAdded(testModel), "Project should exist");
+            LoggerUtils.Logger.Info("Step 5 completed.");
 
             projectPage.GoToTestPage(testModel);
-            Assert.IsTrue(projectPage.testPage.State.WaitForDisplayed(), $"{projectPage.testPage.Name} shouldn't be presented");
+            projectPage.TestPage.State.WaitForDisplayed();
 
             Assert.Multiple(() =>
             {
-                Assert.IsTrue(projectPage.testPage.GetProjectNameFromPage() == projectModel.name, "Names should be eqal");
-                Assert.IsTrue(projectPage.testPage.CheckStatusOnPage(testModel), "Wrong status");
-                Assert.IsTrue(projectPage.testPage.CheckEndTimeOnPage(testModel), "Wrong end time");
-                Assert.IsTrue(projectPage.testPage.CheckDuration(testModel), "Wrong duration time");
-                Assert.IsTrue(StringUtils.FormatLogs(logs).Contains(projectPage.testPage.GetLogsFromPage()), "Logs should be equal");
-                Assert.IsTrue(projectPage.testPage.GetImgFromPage().Contains(screenshotString), "Images should be equal");
-                TestModel tessTestModelFromPage = projectPage.testPage.GeTestModelFromPage();
-                Assert.IsTrue(tessTestModelFromPage.Equals(testModel), "Models should be time");
+                Assert.IsTrue(projectPage.TestPage.GetProjectName() == projectModel.Name, "Names should be eqal");
+                Assert.IsTrue(projectPage.TestPage.IsStatusTextboxEnabled(testModel), "Wrong status");
+                Assert.IsTrue(projectPage.TestPage.IsEndTimeHasCorrectValue(testModel), "Wrong end time");
+                Assert.IsTrue(projectPage.TestPage.IsDurationHasCorrectValue(testModel), "Wrong duration time");
+                Assert.IsTrue(StringUtils.FormatLogs(logs).Contains(projectPage.TestPage.GetLogs()), "Logs should be equal");
+                Assert.IsTrue(projectPage.TestPage.GetImg().Contains(screenshotString), "Images should be equal");
+                TestModel tessTestModelFromPage = projectPage.TestPage.GeTestModel();
+                Assert.IsTrue(tessTestModelFromPage.Equals(testModel), "Models should be equal");
             });
-            Logger.Info("Step 6 completed.");
+            LoggerUtils.Logger.Info("Step 6 completed.");
         }
     }
 }

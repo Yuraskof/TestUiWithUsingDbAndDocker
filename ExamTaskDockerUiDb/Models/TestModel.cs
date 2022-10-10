@@ -4,16 +4,16 @@ namespace ExamTaskDockerUiDb.Models
 {
     public class TestModel
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string status_id { get; set; }
-        public string method_name { get; set; }
-        public int session_id { get; set; }
-        public string start_time { get; set; }
-        public string end_time { get; set; }
-        public string env { get; set; }
-        public string browser { get; set; }
-        public int project_id { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string StatusId { get; set; }
+        public string MethodName { get; set; }
+        public int SessionId { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+        public string Env { get; set; }
+        public string Browser { get; set; }
+        public int ProjectId { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -21,8 +21,8 @@ namespace ExamTaskDockerUiDb.Models
                 return false;
             TestModel other = (TestModel)obj;
 
-            if (name.Equals(other.name) && method_name.Equals(other.method_name) &&
-                start_time.Equals(other.start_time) && env.Equals(other.env) && browser.Equals(other.browser))
+            if (Name.Equals(other.Name) && MethodName.Equals(other.MethodName) &&
+                StartTime.Equals(other.StartTime) && Env.Equals(other.Env) && Browser.Equals(other.Browser))
             {
                 LoggerUtils.LogStep(nameof(Equals) + " \"Test models are equal\"");
                 return true;

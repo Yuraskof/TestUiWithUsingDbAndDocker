@@ -2,9 +2,9 @@
 {
     public class SessionModel
     {
-        public int id { get; set; }
-        public string session_key { get; set; }
-        public string created_time { get; set; }
-        public int build_number { get; set; }
+        public int Id { get; set; }
+        public string SessionKey { get; set; }
+        public string CreatedTime { get; set; }
+        public int BuildNumber { get; set; }
     }
 }

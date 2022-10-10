@@ -20,13 +20,27 @@ namespace ExamTaskDockerUiDb.Utilities
         public static T ReadJsonDataFromPath<T>(string path)
         {
             LoggerUtils.LogStep(nameof(ReadJsonDataFromPath) + $" \"Path - [{path}] deserialized\"");
-            return JsonConvert.DeserializeObject<T>(FileReader.ReadFile(path));
+            return JsonConvert.DeserializeObject<T>(FileUtils.ReadFile(path));
         }
 
         public static string SerializeJsonData(object content)
         {
             LoggerUtils.LogStep(nameof(SerializeJsonData) + " \"Start serializing\"");
             return JsonConvert.SerializeObject(content);
+        }
+
+        public static Dictionary<string, string> GetDataFromJson(string path)
+        {
+            LoggerUtils.LogStep(nameof(GetDataFromJson) + " \"Get data from json\"");
+            var json = File.ReadAllText(path);
+            var jsonObj = JObject.Parse(json);
+            Dictionary<string, string> methods = new();
+
+            foreach (var element in jsonObj)
+            {
+                methods.Add(element.Key, element.Value.ToString());
+            }
+            return methods;
         }
     }
 }

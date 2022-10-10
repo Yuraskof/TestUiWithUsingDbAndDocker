@@ -8,5 +8,6 @@
   "Variant": "1",
   "ProjectName": "Nexage",
   "DateTimeFormat": "yyyy/MM/dd hh:mm:ss",
-  "ImageContentType": "image/png"
+  "ImageContentType": "image/png",
+  "MaxSecondsForWhileExecution": "10"
 }

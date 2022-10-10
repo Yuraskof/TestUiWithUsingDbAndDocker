@@ -7,15 +7,15 @@ namespace ExamTaskDockerUiDb.Forms.Pages
 {
     public class AllProjectsPage : Form
     {
-        private ITextBox FooterTextBox => ElementFactory.GetTextBox(By.XPath("//p[contains(@class, \"footer-text\")]//span"), "Footer text box");
-        private IButton ProjectButton(string project) => ElementFactory.GetButton(By.XPath(string.Format("//div[@class=\"list-group\"]//a[contains(text(), \"{0}\")]", project)), "Project button");
-        private IButton AddButton => FormElement.FindChildElement<IButton>(By.XPath("//button[contains(@class, \"btn-primary\")]"), "Add project button");
+        private ITextBox FooterTextBox => ElementFactory.GetTextBox(By.XPath("//*[contains(@class, 'footer-text')]//span"), "Footer text box");
+        private IButton ProjectButton(string project) => ElementFactory.GetButton(By.XPath(string.Format("//div[@class='list-group']//a[contains(text(), '{0}')]", project)), "Project button");
+        private IButton AddButton => FormElement.FindChildElement<IButton>(By.XPath("//button[contains(@class, 'btn-primary')]"), "Add project button");
         private IWebElement IFrame => AqualityServices.Browser.Driver.FindElement(By.Id("addProjectFrame"));
         
 
-        public AddProjectForm addProjectForm = new AddProjectForm();
+        public AddProjectForm AddProjectForm = new AddProjectForm();
 
-        public AllProjectsPage() : base(By.XPath("//div[contains (@class, \"panel-default\")]//div[contains (text(), \"projects\")]"), "Projects page")
+        public AllProjectsPage() : base(By.XPath("//div[contains (@class, 'panel-default')]//div[contains (text(), 'projects')]"), "Projects page")
         {
         }
         
@@ -31,7 +31,7 @@ namespace ExamTaskDockerUiDb.Forms.Pages
             ProjectButton(project).Click();
         }
 
-        public void OpenAddProjectForm()
+        public void OpenAddProjectFormAndSwitchToNewFrame()
         {
             AddButton.State.WaitForEnabled();
             AddButton.Click();
@@ -44,7 +44,7 @@ namespace ExamTaskDockerUiDb.Forms.Pages
             AqualityServices.Browser.Driver.ExecuteScript("closePopUp()", IFrame);
         }
 
-        public bool ProjectIsPresented(string projectName)
+        public bool IsProjectPresented(string projectName)
         {
             return ProjectButton(projectName).State.WaitForEnabled();
         }

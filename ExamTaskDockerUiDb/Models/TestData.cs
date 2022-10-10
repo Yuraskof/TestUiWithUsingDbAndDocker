@@ -12,5 +12,6 @@
         public string ProjectName { get; set; }
         public string DateTimeFormat { get; set; }
         public string ImageContentType { get; set; }
+        public string MaxSecondsForWhileExecution { get; set; }
     }
 }

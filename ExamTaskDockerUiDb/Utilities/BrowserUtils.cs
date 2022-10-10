@@ -1,13 +1,11 @@
-﻿using ExamTaskDockerUiDb.Base;
-
-namespace ExamTaskDockerUiDb.Utilities
+﻿namespace ExamTaskDockerUiDb.Utilities
 {
     public static class BrowserUtils
     {
         public static string CreateUrlWithCredentials()
         {
             LoggerUtils.LogStep(nameof(CreateUrlWithCredentials) + " \"Create url with credentials\"");
-            return "http://" + BaseTest.loginUser.Login  + ":" + BaseTest.loginUser.Password + "@" + BaseTest.testData.Url;
+            return "http://" + FileUtils.LoginUser.Login  + ":" + FileUtils.LoginUser.Password + "@" + FileUtils.TestData.Url;
         }
     }
 }

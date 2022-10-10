@@ -8,103 +8,103 @@ namespace ExamTaskDockerUiDb.Forms.Pages
 {
     public class TestPage : Form
     {
-        private ITextBox ProjectNameTextBox => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Project name\")]//following-sibling::p"), "Project name text box");
-        private ITextBox TestNameTextBox => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Test name\")]//following-sibling::p"), "Test name text box");
-        private ITextBox TestMethodNameTextBox => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Test method name\")]//following-sibling::p"), "Test method name text box");
-        private ITextBox StatusTextBox(string status) => ElementFactory.GetTextBox(By.XPath(string.Format("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Status\")]//following-sibling::p//span[contains (text(), \"{0}\")]", status)), "Status text box");
-        private ITextBox StartTime => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Time info\")]//following-sibling::p[contains (text(), \"Start time\")]"), "Start time text box");
-        private ITextBox Duration => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Time info\")]//following-sibling::p[contains (text(), \"Duration\")]"), "Duration text box");
-        private ITextBox EndTime => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Time info\")]//following-sibling::p[contains (text(), \"End time\")]"), "End time text box");
-        private ITextBox EnvionmentNameTextBox => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Environment\")]//following-sibling::p"), "Environment name text box");
-        private ITextBox BrowserNameTextBox => ElementFactory.GetTextBox(By.XPath("//h4[@class= \"list-group-item-heading\"][contains (text(), \"Browser\")]//following-sibling::p"), "Browser name text box");
-        private ITextBox LogsTextBox => ElementFactory.GetTextBox(By.XPath("//div[@class= \"panel-heading\"][contains (text(), \"Logs\")]//following::td[contains (text(), \"Action\")]"), "Logs text box");
-        private ILabel ScreenshotLabel => ElementFactory.GetLabel(By.XPath("//div[@class= \"panel-heading\"][contains (text(), \"Attachments\")]//following-sibling::table//img"), "Screenshot label");
+        private ITextBox ProjectNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Project name')]//following-sibling::*"), "Project name text box");
+        private ITextBox TestNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Test name')]//following-sibling::*"), "Test name text box");
+        private ITextBox TestMethodNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Test method name')]//following-sibling::*"), "Test method name text box");
+        private ITextBox StatusTextBox(string status) => ElementFactory.GetTextBox(By.XPath(string.Format("//*[@class='list-group-item-heading'][contains (text(), 'Status')]//following-sibling::*//span[contains (text(), '{0}')]", status)), "Status text box");
+        private ITextBox StartTime => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Time info')]//following-sibling::*[contains (text(), 'Start time')]"), "Start time text box");
+        private ITextBox Duration => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Time info')]//following-sibling::*[contains (text(), 'Duration')]"), "Duration text box");
+        private ITextBox EndTime => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Time info')]//following-sibling::*[contains (text(), 'End time')]"), "End time text box");
+        private ITextBox EnvionmentNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Environment')]//following-sibling::*"), "Environment name text box");
+        private ITextBox BrowserNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Browser')]//following-sibling::*"), "Browser name text box");
+        private ITextBox LogsTextBox => ElementFactory.GetTextBox(By.XPath("//div[@class='panel-heading'][contains (text(), 'Logs')]//following::td[contains (text(), 'Action')]"), "Logs text box");
+        private ILabel ScreenshotLabel => ElementFactory.GetLabel(By.XPath("//div[@class='panel-heading'][contains (text(), 'Attachments')]//following-sibling::table//img"), "Screenshot label");
 
         private TestModel testModel;
 
-        public TestPage() : base(By.XPath("//div[contains (@class, \"fail-reason-block\")]"), "Test page")
+        public TestPage() : base(By.XPath("//div[contains (@class, 'fail-reason-block')]"), "Test page")
         {
             testModel = new TestModel();
         }
 
-        public TestModel GeTestModelFromPage() 
+        public TestModel GeTestModel() 
         {
-            SetTestNameFromPage();
-            SetTestMethodFromPage();
-            SetStartTimeFromPage();
-            SetEnvironmentNameFromPage();
-            SetBrowserNameFromPage();
+            SetTestName();
+            SetTestMethod();
+            SetStartTime();
+            SetEnvironmentName();
+            SetBrowserName();
             return testModel;
         }
 
-        public string GetProjectNameFromPage()
+        public string GetProjectName()
         {
             return ProjectNameTextBox.GetText();
         }
 
-        private void SetTestNameFromPage()
+        private void SetTestName()
         {
-            testModel.name = TestNameTextBox.GetText();
+            testModel.Name = TestNameTextBox.GetText();
         }
 
-        public string GetLogsFromPage()
+        public string GetLogs()
         {
             return LogsTextBox.GetText();
         }
-        public string GetImgFromPage()
+        public string GetImg()
         {
             return ScreenshotLabel.GetAttribute("src");
         }
 
-        private void SetEnvironmentNameFromPage()
+        private void SetEnvironmentName()
         {
-            testModel.env = EnvionmentNameTextBox.GetText();
+            testModel.Env = EnvionmentNameTextBox.GetText();
         }
 
-        private void SetBrowserNameFromPage()
+        private void SetBrowserName()
         {
-            testModel.browser = BrowserNameTextBox.GetText();
+            testModel.Browser = BrowserNameTextBox.GetText();
         }
 
-        private void SetTestMethodFromPage()
+        private void SetTestMethod()
         {
-            testModel.method_name = TestMethodNameTextBox.GetText();
+            testModel.MethodName = TestMethodNameTextBox.GetText();
         }
 
-        public bool CheckStatusOnPage(TestModel model)
+        public bool IsStatusTextboxEnabled(TestModel model)
         {
             string status = null;
-            if (model.status_id == "")
+            if (model.StatusId == "")
             {
                 status = "In progress";
             }
             return StatusTextBox(status).State.WaitForEnabled();
         }
-        private void SetStartTimeFromPage()
+        private void SetStartTime()
         {
             string date = StartTime.GetText();
             date = StringUtils.RegexReplace(": ", "!", date);
             date = StringUtils.SeparateString(date,'!')[1];
             date = StringUtils.ConvertDateTime(date);
-            testModel.start_time = date;
+            testModel.StartTime = date;
         }
 
-        public bool CheckDuration(TestModel model)
+        public bool IsDurationHasCorrectValue(TestModel model)
         {
             string duration = Duration.GetText();
 
-            if (model.status_id == "")
+            if (model.StatusId == "")
             {
                 return duration.Contains("00:00:00.000");
             }
             return false;
         }
 
-        public bool CheckEndTimeOnPage(TestModel model)
+        public bool IsEndTimeHasCorrectValue(TestModel model)
         {
             string endTime = EndTime.GetText();
 
-            if (model.status_id == "")
+            if (model.StatusId == "")
             {
                 var endTimeStrings = StringUtils.SeparateString(endTime, ':');
                 return endTimeStrings[1] == "";

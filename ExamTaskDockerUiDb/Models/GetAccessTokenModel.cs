@@ -2,7 +2,7 @@
 {
     public class GetAccessTokenModel
     {
-        public string variant { get; set; }
+        public string Variant { get; set; }
 
     }
 }
