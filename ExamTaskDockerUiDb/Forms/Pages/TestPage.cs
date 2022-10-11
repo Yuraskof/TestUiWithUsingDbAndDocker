@@ -8,15 +8,15 @@ namespace ExamTaskDockerUiDb.Forms.Pages
 {
     public class TestPage : Form
     {
-        private ITextBox ProjectNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Project name')]//following-sibling::*"), "Project name text box");
-        private ITextBox TestNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Test name')]//following-sibling::*"), "Test name text box");
-        private ITextBox TestMethodNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Test method name')]//following-sibling::*"), "Test method name text box");
+        private ITextBox ProjectNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Project name')]//following-sibling::*[@class ='list-group-item-text']"), "Project name text box");
+        private ITextBox TestNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Test name')]//following-sibling::*[@class ='list-group-item-text']"), "Test name text box");
+        private ITextBox TestMethodNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Test method name')]//following-sibling::*[@class ='list-group-item-text']"), "Test method name text box");
         private ITextBox StatusTextBox(string status) => ElementFactory.GetTextBox(By.XPath(string.Format("//*[@class='list-group-item-heading'][contains (text(), 'Status')]//following-sibling::*//span[contains (text(), '{0}')]", status)), "Status text box");
         private ITextBox StartTime => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Time info')]//following-sibling::*[contains (text(), 'Start time')]"), "Start time text box");
         private ITextBox Duration => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Time info')]//following-sibling::*[contains (text(), 'Duration')]"), "Duration text box");
         private ITextBox EndTime => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Time info')]//following-sibling::*[contains (text(), 'End time')]"), "End time text box");
-        private ITextBox EnvionmentNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Environment')]//following-sibling::*"), "Environment name text box");
-        private ITextBox BrowserNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Browser')]//following-sibling::*"), "Browser name text box");
+        private ITextBox EnvionmentNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Environment')]//following-sibling::*[@class ='list-group-item-text']"), "Environment name text box");
+        private ITextBox BrowserNameTextBox => ElementFactory.GetTextBox(By.XPath("//*[@class='list-group-item-heading'][contains (text(), 'Browser')]//following-sibling::*[@class ='list-group-item-text']"), "Browser name text box");
         private ITextBox LogsTextBox => ElementFactory.GetTextBox(By.XPath("//div[@class='panel-heading'][contains (text(), 'Logs')]//following::td[contains (text(), 'Action')]"), "Logs text box");
         private ILabel ScreenshotLabel => ElementFactory.GetLabel(By.XPath("//div[@class='panel-heading'][contains (text(), 'Attachments')]//following-sibling::table//img"), "Screenshot label");
 
@@ -51,7 +51,7 @@ namespace ExamTaskDockerUiDb.Forms.Pages
         {
             return LogsTextBox.GetText();
         }
-        public string GetImg()
+        public string GetImage()
         {
             return ScreenshotLabel.GetAttribute("src");
         }

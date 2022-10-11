@@ -24,10 +24,10 @@ namespace ExamTaskDockerUiDb.Models
             if (Name.Equals(other.Name) && MethodName.Equals(other.MethodName) &&
                 StartTime.Equals(other.StartTime) && Env.Equals(other.Env) && Browser.Equals(other.Browser))
             {
-                LoggerUtils.LogStep(nameof(Equals) + " \"Test models are equal\"");
+                LoggerUtils.LogStep(nameof(Equals) + " 'Test models are equal'");
                 return true;
             }
-            LoggerUtils.LogStep(nameof(Equals) + " \"Test models are not equal\"");
+            LoggerUtils.LogStep(nameof(Equals) + " 'Test models are not equal'");
             return false;
         }
     }

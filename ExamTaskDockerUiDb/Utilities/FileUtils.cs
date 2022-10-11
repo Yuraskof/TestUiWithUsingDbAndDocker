@@ -20,20 +20,20 @@ namespace ExamTaskDockerUiDb.Utilities
             if (file.Exists)
             {
                 file.Delete();
-                LoggerUtils.LogStep(nameof(ClearLogFile) + $" \"Log file deleted - [{file}]\"");
+                LoggerUtils.LogStep(nameof(ClearLogFile) + $" 'Log file deleted - [{file}]'");
             }
         }
 
         public static ByteArrayContent ReadImage(string path)
         {
-            LoggerUtils.LogStep(nameof(ReadImage) + $" \"Image - [{path}] read\"");
+            LoggerUtils.LogStep(nameof(ReadImage) + $" 'Image - [{path}] read'");
             byte[] imgdata = File.ReadAllBytes(path);
             return new(imgdata);
         }
 
         public static string ReadFile(string path)
         {
-            LoggerUtils.LogStep(nameof(ReadFile) + $" \"File - [{path}] read\"");
+            LoggerUtils.LogStep(nameof(ReadFile) + $" 'File - [{path}] read'");
             StreamReader sr = new(path, Encoding.UTF8);
             return sr.ReadToEnd();
         }

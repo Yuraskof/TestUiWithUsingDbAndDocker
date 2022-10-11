@@ -10,7 +10,7 @@ namespace ExamTaskDockerUiDb.Forms
         private IButton SubmitButton => ElementFactory.GetButton(By.XPath("//button[@type ='submit']"), "Submit button");
         private ITextBox SuccessTextBox => ElementFactory.GetTextBox(By.XPath("//div[contains(@class, 'alert-success')]"), "Success add message");
         
-        public AddProjectForm() : base(By.XPath("//form[@id ='addProjectForm']"), "Add project form") 
+        public AddProjectForm() : base(By.Id("addProjectForm"), "Add project form") 
         {
         }
 

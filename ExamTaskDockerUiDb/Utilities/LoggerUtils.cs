@@ -8,7 +8,6 @@ namespace ExamTaskDockerUiDb.Utilities
     public static class LoggerUtils
     {
         public static Logger Logger => AqualityServices.Get<Logger>();
-        private static TestContext.ResultAdapter Result => TestContext.CurrentContext.Result;
         private static void LogStep(string stepInfo, string stepType)
         {
             var shift = new string('#', 10);
@@ -27,10 +26,10 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static void LogScenarioResult()
         {
-            Logger.Info($"Scenario [{EnvironmentUtil.GetTestName()}] result is {Result.Outcome.Status}!");
-            if (Result.Outcome.Status != TestStatus.Passed)
+            Logger.Info($"Scenario [{EnvironmentUtil.GetTestName()}] result is {EnvironmentUtil.Result.Outcome.Status}!");
+            if (EnvironmentUtil.Result.Outcome.Status != TestStatus.Passed)
             {
-                Logger.Error(Result.Message);
+                Logger.Error(EnvironmentUtil.Result.Message);
             }
             Logger.Info(new string('=', 100));
         }

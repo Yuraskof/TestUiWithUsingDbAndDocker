@@ -4,7 +4,7 @@
     {
         public static string CreateUrlWithCredentials()
         {
-            LoggerUtils.LogStep(nameof(CreateUrlWithCredentials) + " \"Create url with credentials\"");
+            LoggerUtils.LogStep(nameof(CreateUrlWithCredentials) + " 'Create url with credentials'");
             return "http://" + FileUtils.LoginUser.Login  + ":" + FileUtils.LoginUser.Password + "@" + FileUtils.TestData.Url;
         }
     }

@@ -44,7 +44,8 @@ namespace ExamTaskDockerUiDb
 
             AqualityServices.Browser.GoBack();
             allProjectsPage.State.WaitForDisplayed();
-            allProjectsPage.OpenAddProjectFormAndSwitchToNewFrame();
+            allProjectsPage.OpenAddProjectForm();
+            allProjectsPage.SwitchToNewFrame();
             ProjectModel projectModel = new();
             projectModel.Name = EnvironmentUtil.GetProjectName();
             allProjectsPage.AddProjectForm.State.WaitForDisplayed();
@@ -94,7 +95,7 @@ namespace ExamTaskDockerUiDb
                 Assert.IsTrue(projectPage.TestPage.IsEndTimeHasCorrectValue(testModel), "Wrong end time");
                 Assert.IsTrue(projectPage.TestPage.IsDurationHasCorrectValue(testModel), "Wrong duration time");
                 Assert.IsTrue(StringUtils.FormatLogs(logs).Contains(projectPage.TestPage.GetLogs()), "Logs should be equal");
-                Assert.IsTrue(projectPage.TestPage.GetImg().Contains(screenshotString), "Images should be equal");
+                Assert.IsTrue(projectPage.TestPage.GetImage().Contains(screenshotString), "Images should be equal");
                 TestModel tessTestModelFromPage = projectPage.TestPage.GeTestModel();
                 Assert.IsTrue(tessTestModelFromPage.Equals(testModel), "Models should be equal");
             });

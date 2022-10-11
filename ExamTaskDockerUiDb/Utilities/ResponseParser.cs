@@ -7,7 +7,7 @@ namespace ExamTaskDockerUiDb.Utilities
     {
         public static List<TestModel> ParseToTestModel(MySqlDataReader reader)
         {
-            LoggerUtils.LogStep(nameof(ParseToTestModel) + " \"Start parsing response from database to test models\"");
+            LoggerUtils.LogStep(nameof(ParseToTestModel) + " 'Start parsing response from database to test models'");
             List<TestModel> testModels = new();
             DateTime startTime = DateTime.Now;
 
@@ -32,7 +32,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static string ParseToString(MySqlDataReader reader)
         {
-            LoggerUtils.LogStep(nameof(ParseToProjectModel) + " \"Start parsing response from database to string\"");
+            LoggerUtils.LogStep(nameof(ParseToProjectModel) + " 'Start parsing response from database to string'");
             reader.Read();
             string result = reader[0].ToString();
             return result;
@@ -40,7 +40,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static List<ProjectModel> ParseToProjectModel(MySqlDataReader reader)
         {
-            LoggerUtils.LogStep(nameof(ParseToProjectModel) + " \"Start parsing response from database to project models\"");
+            LoggerUtils.LogStep(nameof(ParseToProjectModel) + " 'Start parsing response from database to project models'");
             List<ProjectModel> testModels = new();
             int iterations = 0;
 

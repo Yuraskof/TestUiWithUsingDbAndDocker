@@ -12,7 +12,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static string GetAccessToken(GetAccessTokenModel model)
         {
-            LoggerUtils.LogStep(nameof(GetAccessToken) + " \"Send request to get access token\"");
+            LoggerUtils.LogStep(nameof(GetAccessToken) + " 'Send request to get access token'");
 
             string request = host + ApiMethods["getToken"] + "?" + "variant=" + model.Variant;
 
@@ -22,7 +22,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
             if (!IsStatusCodeCorrect((int)StatusCodes.OK, response))
             {
-                LoggerUtils.LogStep(nameof(GetAccessToken) + $" \"Invalid status code - [{response.StatusCode}]\"");
+                LoggerUtils.LogStep(nameof(GetAccessToken) + $" 'Invalid status code - [{response.StatusCode}]'");
                 return null;
             }
             return response.Content.ReadAsStringAsync().Result;
@@ -30,7 +30,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static bool IsStatusCodeCorrect(int expectedStatusCode, HttpResponseMessage response)
         {
-            LoggerUtils.LogStep(nameof(IsStatusCodeCorrect) + " \"Check status code\"");
+            LoggerUtils.LogStep(nameof(IsStatusCodeCorrect) + " 'Check status code'");
             return (int)response.StatusCode == expectedStatusCode;
         }
     }

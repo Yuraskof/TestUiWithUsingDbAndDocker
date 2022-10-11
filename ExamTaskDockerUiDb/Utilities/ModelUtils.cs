@@ -6,7 +6,7 @@ namespace ExamTaskDockerUiDb.Utilities
     {
         public static GetAccessTokenModel CreateGetAccessTokenModel()
         {
-            LoggerUtils.LogStep(nameof(CreateGetAccessTokenModel) + " \"Start creating get access token model\"");
+            LoggerUtils.LogStep(nameof(CreateGetAccessTokenModel) + " 'Start creating get access token model'");
             GetAccessTokenModel model = new();
             model.Variant = FileUtils.TestData.Variant;
             return model;
@@ -14,13 +14,13 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static bool IsModelsDatesDescending(List<TestModel> modelsFromPage)
         {
-            LoggerUtils.LogStep(nameof(IsModelsDatesDescending) + " \"Start checking tests sort\"");
+            LoggerUtils.LogStep(nameof(IsModelsDatesDescending) + " 'Start checking tests sort'");
 
             for (int i = 1; i < modelsFromPage.Count; i++)
             {
                 if (Convert.ToDateTime(modelsFromPage[i-1].StartTime) < Convert.ToDateTime(modelsFromPage[i].StartTime))
                 {
-                    LoggerUtils.LogStep(nameof(IsModelsDatesDescending) + $" \"The latest date from previous - [{modelsFromPage[i]}]\"");
+                    LoggerUtils.LogStep(nameof(IsModelsDatesDescending) + $" 'The latest date from previous - [{modelsFromPage[i]}]'");
                     return false;
                 }
             }
@@ -42,8 +42,6 @@ namespace ExamTaskDockerUiDb.Utilities
             {
                 foreach (var dbModel in modelsFromDb)
                 {
-                    modelsFromPage[i].StartTime = StringUtils.ConvertDateTime(modelsFromPage[i].StartTime);
-
                     if (IsModelsHaveEqualNameAndDate(dbModel, modelsFromPage[i]))
                     {
                         matchesCount++;
@@ -57,6 +55,7 @@ namespace ExamTaskDockerUiDb.Utilities
         private static bool IsModelsHaveEqualNameAndDate(TestModel modelFromDb, TestModel modelFromPage)
         {
             LoggerUtils.Logger.Info(nameof(IsModelsHaveEqualNameAndDate) + $" 'Compare names [{modelFromDb.Name}] - [{modelFromPage.Name}]; Compare start time [{modelFromDb.StartTime}] - [{modelFromPage.StartTime}]'");
+            modelFromPage.StartTime = StringUtils.ConvertDateTime(modelFromPage.StartTime);
             return modelFromDb.Name == modelFromPage.Name && modelFromDb.StartTime == modelFromPage.StartTime;
         }
     }

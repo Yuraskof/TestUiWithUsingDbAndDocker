@@ -31,10 +31,15 @@ namespace ExamTaskDockerUiDb.Forms.Pages
             ProjectButton(project).Click();
         }
 
-        public void OpenAddProjectFormAndSwitchToNewFrame()
+        public void OpenAddProjectForm()
         {
             AddButton.State.WaitForEnabled();
             AddButton.Click();
+            
+        }
+
+        public void SwitchToNewFrame()
+        {
             AqualityServices.Browser.Driver.SwitchTo().Frame(IFrame);
         }
 

@@ -7,6 +7,7 @@ namespace ExamTaskDockerUiDb.Utilities
 {
     public static class EnvironmentUtil
     {
+        public static TestContext.ResultAdapter Result => TestContext.CurrentContext.Result;
         public static string GetHostName()
         {
             LoggerUtils.LogStep(nameof(GetHostName));
@@ -27,7 +28,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static string GetProjectName()
         {
-            LoggerUtils.LogStep(nameof(GetProjectName) + " \"Get project name\"");
+            LoggerUtils.LogStep(nameof(GetProjectName) + " 'Get project name'");
             StackFrame sf = new();
             string className = sf.GetMethod().DeclaringType.ToString();
             return StringUtils.SeparateString(className, '.')[0];
@@ -35,7 +36,7 @@ namespace ExamTaskDockerUiDb.Utilities
 
         public static string GetBrowserName()
         {
-            LoggerUtils.LogStep(nameof(GetBrowserName) + " \"Get browser name\"");
+            LoggerUtils.LogStep(nameof(GetBrowserName) + " 'Get browser name'");
             var settingsFile = AqualityServices.Get<ISettingsFile>();
             return settingsFile.GetValue<string>(".browserName");
         }
